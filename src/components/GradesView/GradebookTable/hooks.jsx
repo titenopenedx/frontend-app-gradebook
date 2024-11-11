@@ -18,6 +18,7 @@ export const useGradebookTableData = () => {
   const { formatMessage } = useIntl();
   const grades = selectors.grades.useAllGrades();
   const headings = selectors.root.useGetHeadings();
+  console.log('Fetched Grades:', grades);
 
   const mapHeaders = (heading) => {
     let label;
@@ -29,6 +30,8 @@ export const useGradebookTableData = () => {
       label = <LabelReplacements.MastersOnlyLabelReplacement {...messages.emailHeading} />;
     } else if (heading === Headings.fullName) {
       label = <LabelReplacements.MastersOnlyLabelReplacement {...messages.fullNameHeading} />;
+    } else if (heading === Headings.testField) {  // Handle the new field header
+      label = 'Test Field';  // You can customize this label if needed  
     } else {
       label = heading;
     }
@@ -41,6 +44,8 @@ export const useGradebookTableData = () => {
     ),
     [Headings.email]: (<Fields.Text value={entry.email} />),
     [Headings.totalGrade]: `${roundGrade(entry.percent * 100)}${getLocalizedPercentSign()}`,
+    [Headings.fullName]: entry.full_name || 'N/A',  // Ensure entry.full_name exists
+    [Headings.testField]: 'Test Value',
     ...entry.section_breakdown.reduce((acc, subsection) => ({
       ...acc,
       [subsection.label]: <GradeButton {...{ entry, subsection }} />,
